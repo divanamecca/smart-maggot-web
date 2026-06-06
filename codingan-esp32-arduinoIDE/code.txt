@@ -1,0 +1,100 @@
+#include "DHT.h"
+#include <WiFi.h>
+#include <HTTPClient.h>
+
+#define DHTPIN 23        
+#define DHTTYPE DHT11    
+#define LIGHT_PIN 34     
+
+// PENGATURAN INDIKATOR DUAL-LED
+#define LED_MERAH 18       // Untuk overheat / terlalu kering
+#define LED_HIJAU 19       // Untuk kandang kegelapan
+
+const char* ssid = "punya_dipa";
+const char* password = "alhamdulillah";
+
+// Menggunakan REST API sesuai spek proyek, kita pakai nama server_ip ya beb
+//const char* server_ip = "10.109.97.210";
+// CONTOH: Ganti sesuai angka asli dari Wireless LAN Wi-Fi di CMD kamu
+const char* server_ip = "10.220.250.210"; 
+
+float batasSuhuPanas = 31.5; 
+float batasKelembabanKering = 50.0;
+
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  Serial.begin(115200);
+  dht.begin();
+  
+  pinMode(LED_MERAH, OUTPUT);
+  pinMode(LED_HIJAU, OUTPUT);
+  pinMode(LIGHT_PIN, INPUT);
+  
+  // === KONEKSI WI-FI (Sudah diaktifkan agar tidak hampa) ===
+  Serial.print("Mencoba koneksi ke Hotspot: ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+  
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\n-> STATUS: ESP32 Berhasil Online, Beb! 🎉");
+}
+
+void loop() {
+  delay(2000); 
+
+  float kelembaban = dht.readHumidity();
+  float suhu = dht.readTemperature();
+  int statusCahaya = digitalRead(LIGHT_PIN); 
+
+  if (isnan(kelembaban) || isnan(suhu)) {
+    Serial.println("Sensor DHT11 gagal membaca data!");
+    return;
+  }
+
+  // ================= LOGIKA LED 1: MERAH (SUHU & KELEMBABAN) =================
+  if (suhu > batasSuhuPanas || kelembaban < batasKelembabanKering) {
+    digitalWrite(LED_MERAH, HIGH); 
+  } else {
+    digitalWrite(LED_MERAH, LOW);
+  }
+
+  // ================== LOGIKA LED 2: HIJAU (AMANDEMEN GAYALAM MAGGOT) ==================
+  if (statusCahaya == LOW) { 
+    digitalWrite(LED_HIJAU, HIGH); // NYALA jika disenter (TERANG = BAHAYA buat Maggot! ⚠️)
+  } else {
+    digitalWrite(LED_HIJAU, LOW);  // MATI jika gelap (GELAP = AMAN & NYAMAN buat Maggot 💤)
+  }
+
+  if(statusCahaya == LOW) {
+    Serial.print(F(" -> PERINGATAN: KANDANG TERLALU TERANG! ⚠️"));
+  } else {
+    Serial.print(F(" -> KANDANG TEDUH (Maggot Nyaman) 💤"));
+  }
+
+  // ==================== PROSES REST API TEMBAK KE LAPTOP ====================
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
+    
+    // Alamat URL otomatis mengambil variabel server_ip di atas secara dinamis
+    String url = "http://" + String(server_ip) + ":5000/api/kirim-data";
+    http.begin(url); 
+    http.addHeader("Content-Type", "application/json");
+    
+    // Konstruksi JSON Payload
+    String jsonPayload = "{\"suhu\":" + String(suhu) + 
+                         ",\"kelembaban\":" + String(kelembaban) + 
+                         ",\"cahaya\":" + String(statusCahaya) + "}";
+    
+    int httpResponseCode = http.POST(jsonPayload);
+    
+    // Cetak log respon server di Serial Monitor biar gampang debugging
+    Serial.print("[HTTP REST API] Status Respon Kirim: ");
+    Serial.println(httpResponseCode); 
+    
+    http.end();
+  }
+}
