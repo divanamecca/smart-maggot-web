@@ -14,12 +14,10 @@
         background-color: #f4f7f4;
         font-family: "Segoe UI", sans-serif;
       }
-
       .bg-maggot {
         background-color: #2e7d32;
         color: white;
       }
-
       .card {
         border-radius: 12px;
       }
@@ -60,10 +58,7 @@
 
       <div class="row g-4">
         <div class="col-md-4">
-          <div
-            class="card shadow-sm border-0 p-4 mb-4 bg-white"
-            style="height: 100%"
-          >
+          <div class="card shadow-sm border-0 p-4 mb-3 bg-white">
             <h5 class="mb-3 text-success fw-bold">📝 Input Data Harian</h5>
             <form action="/input-manual" method="POST">
               <div class="mb-3">
@@ -94,20 +89,66 @@
               </div>
               <button
                 type="submit"
-                class="btn btn-success w-100 bg-maggot fw-bold shadow-sm"
+                class="btn btn-success w-100 bg-maggot fw-bold shadow-sm mb-2"
               >
                 Simpan Data
               </button>
             </form>
+            <a
+              href="/export-csv"
+              class="btn btn-outline-success w-100 fw-bold shadow-sm"
+              >📥 Unduh Laporan (.CSV)</a
+            >
+          </div>
+
+          <div class="card shadow-sm border-0 p-3 bg-white">
+            <h6 class="text-success fw-bold mb-2">📋 Riwayat Biokonversi</h6>
+            <div
+              class="table-responsive"
+              style="max-height: 180px; overflow-y: auto"
+            >
+              <table
+                class="table table-sm table-striped text-center"
+                style="font-size: 13px"
+              >
+                <thead class="table-dark">
+                  <tr>
+                    <th>No</th>
+                    <th>Sampah</th>
+                    <th>Maggot</th>
+                    <th>Efis (%)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% if manual_data %} {% for item in manual_data %}
+                  <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.sampah }} kg</td>
+                    <td>{{ item.maggot }} kg</td>
+                    <td class="text-success fw-bold">{{ item.efisiensi }}%</td>
+                  </tr>
+                  {% endfor %} {% else %}
+                  <tr>
+                    <td colspan="4" class="text-muted text-center py-2">
+                      Belum ada data harian.
+                    </td>
+                  </tr>
+                  {% endif %}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
         <div class="col-md-8">
-          <div class="card shadow-sm border-0 p-4 bg-white">
+          <div
+            class="card shadow-sm border-0 p-4 bg-white"
+            style="height: 100%"
+          >
             <h5 class="mb-3 text-success fw-bold">
               📈 Grafik Perubahan Parameter
             </h5>
-            <div style="position: relative; height: 380px; width: 100%">
+            <div style="position: relative; height: 420px; width: 100%">
               <canvas id="maggotChart"></canvas>
             </div>
           </div>
@@ -116,7 +157,6 @@
     </div>
 
     <script>
-      // Inisialisasi Grafik Menor & Gagah
       const ctx = document.getElementById("maggotChart").getContext("2d");
       const maggotChart = new Chart(ctx, {
         type: "line",
@@ -145,7 +185,7 @@
         },
         options: {
           responsive: true,
-          maintainAspectRatio: false, // Memaksa grafik mengikuti tinggi 380px
+          maintainAspectRatio: false,
           scales: {
             y: {
               beginAtZero: true,
@@ -157,14 +197,11 @@
             },
           },
           plugins: {
-            legend: {
-              labels: { font: { size: 14, weight: "bold" } },
-            },
+            legend: { labels: { font: { size: 14, weight: "bold" } } },
           },
         },
       });
 
-      // Polling Data Terbaru tiap 2 detik
       async function ambilDataTerbaru() {
         try {
           let response = await fetch("/api/data-terbaru");
