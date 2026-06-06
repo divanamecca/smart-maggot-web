@@ -13,8 +13,6 @@
 const char* ssid = "punya_dipa";
 const char* password = "alhamdulillah";
 
-// Menggunakan REST API sesuai spek proyek, kita pakai nama server_ip ya beb
-//const char* server_ip = "10.109.97.210";
 // CONTOH: Ganti sesuai angka asli dari Wireless LAN Wi-Fi di CMD kamu
 const char* server_ip = "10.220.250.210"; 
 
