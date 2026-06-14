@@ -9,9 +9,10 @@ Aplikasi web cerdas ini merupakan sistem monitoring berbasis *Internet of Things
    - Merekam data sensor setiap 5 menit (`sensor_history`).
    - Menyimpan seluruh log produksi panen siswa secara aman (`production_logs`).
 3. **Monitoring Sensor Real-Time:** Menampilkan Suhu, Kelembaban, dan intensitas Cahaya dari *hardware* ESP32 tanpa perlu *refresh* halaman.
-4. **Grafik Historis Cerdas:** *Chart.js* langsung memuat 20 titik data dari masa lalu sesaat setelah halaman dibuka.
-5. **Notifikasi Gawat Darurat:** *Alert* peringatan suhu merah akan muncul otomatis jika kandang BSF terpantau terlalu panas (> 31.5°C).
-6. **Ekspor CSV Ramah Excel:** Ekspor satu kali klik. Data dapat langsung dibaca dengan kolom sempurna di Microsoft Excel (mendukung BOM UTF-8 SIG).
+6. **Modul Edukasi Interaktif:** Terdapat halaman khusus berisi panduan kurikulum *Circular Economy* dan siklus BSF yang *hardcoded* (aman dari modifikasi iseng).
+7. **Mobile-First & Responsive Dashboard:** Antarmuka secara cerdas beradaptasi di layar HP. Grafik diprioritaskan tampil paling atas pada layar kecil, dengan menu navigasi yang otomatis menyesuaikan (*wrap*).
+8. **Profil Akun & Ganti Password Aman:** Pengguna dapat memperbarui kata sandi, yang tentunya masih dilindungi secara ketat oleh "Kode Akses Sekolah".
+9. **Ekspor CSV Ramah Excel:** Ekspor satu kali klik. Data dapat langsung dibaca dengan kolom sempurna di Microsoft Excel (mendukung BOM UTF-8 SIG).
 
 ## 🔌 Spesifikasi Hardware (IoT)
 Sistem ini terintegrasi secara langsung dengan perangkat keras fisik:
