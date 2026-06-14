@@ -3,3 +3,10 @@ __pycache__/
 .images/
 .DS_Store
 Thumbs.db
+
+# Virtual Environment
+venv/
+
+# Database
+database.db
+*.sqlite3
