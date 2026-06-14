@@ -8,83 +8,218 @@ Proyek Akhir Praktikum Mata Kuliah **Mobile Computing (TIK403)**
 
 ## 📝 Deskripsi Proyek
 
-Proyek ini merupakan implementasi prototipe **Smart Maggot Farming** berbasis _Internet of Things_ (IoT) yang mengintegrasikan _Wireless Sensor Network_ (WSN) skala edukasi dengan _Web Dashboard_ interaktif. Sistem dirancang khusus untuk memonitor parameter lingkungan pada kandang pembesaran larva _Black Soldier Fly_ (BSF) secara _real-time_ guna mengoptimalkan proses biokonversi sampah organik dalam kerangka _Circular Economy_.
-Sistem menggunakan **ESP32** sebagai _node_ sensor nirkabel untuk mengakuisisi data suhu, kelembaban, dan intensitas cahaya, lalu mengirimkannya ke server backend **Python Flask** melalui protokol **HTTP POST (REST API)** menggunakan jaringan Wi-Fi lokal. Data divisualisasikan secara dinamis menggunakan **Chart.js** dengan sistem _AJAX Polling_ otomatis setiap 2 detik.
+Proyek ini merupakan implementasi prototipe **Smart Maggot Farming** berbasis **Internet of Things (IoT)** yang mengintegrasikan **Wireless Sensor Network (WSN)** skala edukasi dengan **Web Dashboard** interaktif.
+
+Sistem dirancang untuk memonitor parameter lingkungan pada kandang pembesaran larva **Black Soldier Fly (BSF)** secara **real-time** guna mengoptimalkan proses biokonversi sampah organik dalam kerangka **Circular Economy**.
+
+Sistem menggunakan **ESP32** sebagai node sensor nirkabel untuk mengakuisisi data suhu, kelembaban, dan intensitas cahaya, kemudian mengirimkannya ke server backend **Python Flask** melalui protokol **HTTP POST (REST API)** menggunakan jaringan Wi-Fi lokal.
+
+Data sensor divisualisasikan secara dinamis menggunakan **Chart.js** dengan mekanisme **AJAX Polling** otomatis setiap 2 detik.
 
 ---
 
 ## ✨ Fitur Utama Sistem
 
-1. **Multi-Parameter Real-Time Monitoring:** Membaca suhu (°C), kelembaban udara (%), dan status pencahayaan secara simultan.
-2. **Dual-LED Hazard Indicator:**
-   - **LED Merah (GPIO 18):** Menyala otomatis sebagai alarm fisik jika terjadi kondisi _overheat_ (suhu > 28.5°C) atau kelembaban terlalu kering (< 50%).
-   - **LED Hijau (GPIO 19):** Menyala otomatis jika kandang mendeteksi cahaya berlebih (karena larva maggot bersifat fotofobik/takut cahaya dan membutuhkan kondisi teduh agar optimal).
-3. **Grafik Responsif & Dinamis:** Visualisasi pergerakan data sensor menggunakan Chart.js yang ter-update otomatis tanpa perlu me-refresh halaman (_Asynchronous AJAX_).
-4. **User Input / Data Manual:** Form penginputan data harian untuk mencatat parameter non-sensor seperti berat sampah masuk (kg) dan total produksi panen maggot (kg).
+### 1. Multi-Parameter Real-Time Monitoring
+
+Membaca dan menampilkan data berikut secara simultan:
+
+* Suhu udara (°C)
+* Kelembaban udara (%)
+* Status pencahayaan kandang
+
+### 2. Dual-LED Hazard Indicator
+
+#### 🔴 LED Merah (GPIO 18)
+
+Menyala otomatis apabila:
+
+* Suhu melebihi **28.5°C**
+* Kelembaban kurang dari **50%**
+
+#### 🟢 LED Hijau (GPIO 19)
+
+Menyala otomatis apabila:
+
+* Kandang terdeteksi terlalu terang
+* Lingkungan tidak ideal bagi larva maggot yang bersifat fotofobik (menghindari cahaya)
+
+### 3. Grafik Responsif dan Dinamis
+
+* Visualisasi data menggunakan **Chart.js**
+* Pembaruan data otomatis tanpa refresh halaman
+* Menggunakan metode **Asynchronous AJAX Polling**
+
+### 4. User Input / Data Manual
+
+Form input untuk mencatat data operasional harian seperti:
+
+* Berat sampah organik masuk (kg)
+* Total hasil panen maggot (kg)
 
 ---
 
-## 🛠️ Spesifikasi Arsitektur Sistem
+## 🛠️ Arsitektur Sistem
 
-### 1. Perangkat Keras (Hardware) & Pin Mapping
+### 1. Perangkat Keras (Hardware)
 
-Komponen utama yang digunakan beserta konfigurasinya pada _breadboard_:
-| Komponen | Pin ESP32 | Deskripsi |
-| :--- | :--- | :--- |
-| **ESP32 Development Board** | VCC (3.3V) & GND | Otak pengolah data & modul Wi-Fi bawaan |
-| **Sensor DHT11** | **GPIO 23** | Akuisisi data Suhu dan Kelembaban Udara |
-| **Sensor Cahaya LDR (Digital Output/DO)** | **GPIO 34** | Deteksi kondisi gelap/terang kandang |
-| **LED Merah + Resistor 100 Ω** | **GPIO 18** | Indikator Bahaya _Overheat_ / Kering |
-| **LED Hijau + Resistor 100 Ω** | **GPIO 19** | Indikator Bahaya Kandang Terlalu Terang |
+| Komponen                  | Pin ESP32  | Deskripsi                      |
+| ------------------------- | ---------- | ------------------------------ |
+| ESP32 Development Board   | 3.3V & GND | Mikrokontroler dan modul Wi-Fi |
+| Sensor DHT11              | GPIO 23    | Sensor suhu dan kelembaban     |
+| Sensor Cahaya LDR (DO)    | GPIO 34    | Deteksi kondisi terang/gelap   |
+| LED Merah + Resistor 100Ω | GPIO 18    | Indikator overheat/kering      |
+| LED Hijau + Resistor 100Ω | GPIO 19    | Indikator cahaya berlebih      |
+
+---
 
 ### 2. Perangkat Lunak (Software Stack)
 
-- **Firmware:** C++ (Arduino IDE)
-- **Backend Framework:** Python 3 (Flask REST API)
-- **Frontend UI:** HTML5, CSS3, Bootstrap 5 (Responsive Layout)
-- **Data Visualization:** JavaScript (Chart.js via AJAX Polling)
+| Komponen         | Teknologi                |
+| ---------------- | ------------------------ |
+| Firmware         | C++ (Arduino IDE)        |
+| Backend          | Python Flask             |
+| Frontend         | HTML5, CSS3, Bootstrap 5 |
+| Visualisasi Data | Chart.js                 |
+| Komunikasi Data  | REST API (HTTP POST)     |
 
 ---
 
-## 📁 Struktur Direktori Repositori
+## 📁 Struktur Direktori Proyek
 
+```text
 smart-maggot-uas/
 │
-├── 📁 smart-maggot-firmware/
-│ └── 📄 smart_maggot_firmware.ino # Source code C++ untuk ESP32 (Arduino IDE)
+├── smart-maggot-firmware/
+│   └── smart_maggot_firmware.ino
 │
-└── 📁 smart-maggot-web-uas/
-├── 📄 app.py # Server Backend Flask (REST API & Routing)
-├── 📁 static/ # Tempat file aset statis (CSS/JS jika diperlukan)
-└── 📁 templates/
-└── 📄 index.html # Frontend Web Dashboard (Bootstrap + Chart.js)
+└── smart-maggot-web-uas/
+    ├── app.py
+    ├── static/
+    │
+    └── templates/
+        └── index.html
+```
 
-🚀 Panduan Instalasi & Pengoperasian
+### Keterangan File
 
-1. Konfigurasi & Upload Firmware (ESP32)
-   Buka file smart_maggot_firmware.ino menggunakan Arduino IDE.
-   Pastikan pustaka DHT sensor library oleh Adafruit sudah terinstal.
-   Sesuaikan kredensial Wi-Fi Hotspot dan IP Laptop Anda pada baris kode berikut:
-   C++
-   const char* ssid = "punya_dipa";
-   const char* password = "alhamdulillah";
-   const char\* server_ip = "10.220.250.210"; // Sesuaikan dengan IPv4 Wi-Fi laptop Anda (cek via cmd: ipconfig)
-   Pilih Board DOIT ESP32 DEVKIT V1, lalu lakukan Upload.
-   Buka Serial Monitor (Baud rate: 115200) untuk memantau status koneksi dan respon HTTP (200 jika sukses).
+| File / Folder             | Fungsi                                               |
+| ------------------------- | ---------------------------------------------------- |
+| smart_maggot_firmware.ino | Program ESP32 untuk membaca sensor dan mengirim data |
+| app.py                    | Backend Flask dan REST API                           |
+| templates/index.html      | Dashboard monitoring berbasis web                    |
+| static/                   | Penyimpanan aset CSS, JavaScript, dan gambar         |
 
-2. Setup Server Web Dashboard (Python Flask)
-   Buka folder smart-maggot-web-uas/ menggunakan VS Code.
-   Buka terminal baru di VS Code, lalu instal dependensi Flask melalui pip:
-   Bash
-   pip install flask
-   Jalankan server lokal Flask dengan mengetik perintah berikut:
-   Bash
-   python app.py
-   Pastikan terminal memunculkan log aktif yang menandakan server membuka gerbang jaringan:
+---
 
-- Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+## 🚀 Panduan Instalasi dan Pengoperasian
 
-3. Akses Dashboard
-   Buka web browser (Google Chrome/Microsoft Edge) di laptop Anda, lalu akses tautan berikut:
-   Plaintext
-   http://localhost:5000
+### 1. Upload Firmware ke ESP32
+
+1. Buka file:
+
+```text
+smart_maggot_firmware.ino
+```
+
+menggunakan **Arduino IDE**.
+
+2. Pastikan library berikut telah terinstal:
+
+* DHT Sensor Library by Adafruit
+* Adafruit Unified Sensor
+
+3. Sesuaikan konfigurasi jaringan pada kode berikut:
+
+```cpp
+const char* ssid = "punya_dipa";
+const char* password = "alhamdulillah";
+const char* server_ip = "10.220.250.210";
+```
+
+> Ganti `server_ip` sesuai alamat IPv4 laptop Anda yang dapat dilihat menggunakan perintah:
+
+```bash
+ipconfig
+```
+
+4. Pilih board:
+
+```text
+DOIT ESP32 DEVKIT V1
+```
+
+5. Upload program ke ESP32.
+
+6. Buka **Serial Monitor** dengan baud rate:
+
+```text
+115200
+```
+
+7. Pastikan muncul status:
+
+```text
+HTTP Response Code: 200
+```
+
+yang menandakan data berhasil dikirim ke server.
+
+---
+
+### 2. Menjalankan Web Dashboard
+
+1. Masuk ke folder:
+
+```text
+smart-maggot-web-uas/
+```
+
+2. Install Flask:
+
+```bash
+pip install flask
+```
+
+3. Jalankan server:
+
+```bash
+python app.py
+```
+
+4. Jika berhasil, terminal akan menampilkan:
+
+```text
+* Running on http://0.0.0.0:5000/
+```
+
+---
+
+### 3. Mengakses Dashboard
+
+Buka browser kemudian akses:
+
+http://localhost:5000
+
+atau
+
+```text
+http://127.0.0.1:5000
+```
+
+Dashboard akan menampilkan:
+
+* Data suhu real-time
+* Data kelembaban real-time
+* Status pencahayaan
+* Grafik monitoring sensor
+* Form input data produksi
+
+---
+
+## 🎯 Tujuan Pengembangan
+
+* Menerapkan konsep Wireless Sensor Network (WSN).
+* Mengintegrasikan perangkat IoT dengan web dashboard.
+* Memonitor kondisi lingkungan budidaya maggot secara real-time.
+* Mendukung pengelolaan budidaya maggot yang lebih efisien dan berkelanjutan.
