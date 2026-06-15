@@ -1,46 +1,263 @@
-# 🐛 Smart Maggot Farming Dashboard
-*Tugas Akhir Semester (UAS) - Berbasis Proposal PKML Sekolah Alam Indonesia Cibinong*
+# 🐛 Smart Maggot Farming Dashboard — Wireless Sensor Network (WSN)
 
-Aplikasi web cerdas ini merupakan sistem monitoring berbasis *Internet of Things* (IoT) untuk pengelolaan budidaya Maggot *Black Soldier Fly* (BSF) sebagai media edukasi *Circular Economy*.
-
-## ✨ Fitur Utama
-1. **Keamanan Ekstra (Secret Code Registration):** Sistem pendaftaran tertutup bagi pihak luar. Hanya siswa dan guru yang memiliki kode akses (`ALAMCIBINONG26`) yang dapat membuat akun dan mengakses sistem.
-2. **Database Permanen (SQLite):** 
-   - Merekam data sensor setiap 5 menit (`sensor_history`).
-   - Menyimpan seluruh log produksi panen siswa secara aman (`production_logs`).
-3. **Monitoring Sensor Real-Time:** Menampilkan Suhu, Kelembaban, dan intensitas Cahaya dari *hardware* ESP32 tanpa perlu *refresh* halaman.
-6. **Modul Edukasi Interaktif:** Terdapat halaman khusus berisi panduan kurikulum *Circular Economy* dan siklus BSF yang *hardcoded* (aman dari modifikasi iseng).
-7. **Mobile-First & Responsive Dashboard:** Antarmuka secara cerdas beradaptasi di layar HP. Grafik diprioritaskan tampil paling atas pada layar kecil, dengan menu navigasi yang otomatis menyesuaikan (*wrap*).
-8. **Profil Akun & Ganti Password Aman:** Pengguna dapat memperbarui kata sandi, yang tentunya masih dilindungi secara ketat oleh "Kode Akses Sekolah".
-9. **Ekspor CSV Ramah Excel:** Ekspor satu kali klik. Data dapat langsung dibaca dengan kolom sempurna di Microsoft Excel (mendukung BOM UTF-8 SIG).
-
-## 🔌 Spesifikasi Hardware (IoT)
-Sistem ini terintegrasi secara langsung dengan perangkat keras fisik:
-- **Mikrokontroler:** ESP32 (sebagai otak utama pengirim data via WiFi).
-- **Sensor Suhu & Kelembaban:** DHT11 / DHT22.
-- **Sensor Cahaya:** LDR (Light Dependent Resistor) atau Modul Cahaya analog.
-- **Indikator Aktuator (LED):**
-  - 🟢 **Lampu Hijau (Indikator Suhu):** Akan menyala sebagai penanda/aktuasi bahwa suhu sedang dalam kondisi bahaya/panas.
-  - 🔴 **Lampu Merah (Indikator Cahaya):** Akan menyala apabila kondisi kandang terlalu terang (maggot bersifat *fotofobik* / takut cahaya).
-
-## 🛠️ Persyaratan Sistem (Prerequisites)
-- Python 3.x
-- Flask (`pip install Flask`)
-- Werkzeug Security (Bawaan Flask)
-- Modul SQLite3 (Bawaan Python)
-
-## 🚀 Cara Menjalankan Aplikasi
-1. Buka Terminal/Command Prompt di dalam direktori proyek ini.
-2. Jalankan perintah berikut:
-   ```bash
-   flask run --host=0.0.0.0
-   ```
-   *(Penggunaan host 0.0.0.0 memungkinkan aplikasi untuk diakses dari HP melalui jaringan WiFi yang sama).*
-3. Buka browser dan ketikkan alamat: `http://localhost:5000` (atau IP Address laptop jika mengakses dari HP).
-
-## 🔐 Info Demo
-- **Kode Akses Sekolah:** `ALAMCIBINONG26`
-- **Cara Kerja:** ESP32 mengirim data via metode POST JSON ke *endpoint* `/api/kirim-data` secara terus menerus. Web menggunakan AJAX untuk mengambil data tersebut dari memori RAM (untuk *live update* tiap 2 detik) dan dari database SQLite (untuk memori jangka panjang grafik).
+Proyek Akhir Praktikum Mata Kuliah **Mobile Computing (TIK403)**
+Program Studi D4 Teknik Informatika
+Jurusan Teknik Informatika dan Komputer
+Politeknik Negeri Jakarta (PNJ)
 
 ---
-*Dikembangkan untuk memenuhi standar spesifikasi Sistem Smart Farming berbasis Project-Based Learning.*
+
+# 📖 Deskripsi Proyek
+
+Smart Maggot Farming Dashboard merupakan sistem monitoring dan pengelolaan budidaya maggot berbasis Wireless Sensor Network (WSN) yang memanfaatkan mikrokontroler ESP32 sebagai node sensor dan Flask sebagai web server.
+
+Sistem memungkinkan pengguna untuk:
+
+* Memantau kondisi lingkungan kandang maggot secara real-time.
+* Melihat data suhu, kelembaban, dan intensitas cahaya.
+* Mengelola data budidaya melalui dashboard web.
+* Mengakses halaman edukasi budidaya maggot.
+* Melakukan autentikasi pengguna (login dan registrasi).
+* Menyimpan data ke database SQLite.
+* Mengintegrasikan komunikasi data antara ESP32 dan server menggunakan REST API.
+
+---
+
+# 🎯 Tujuan Sistem
+
+Sistem ini dikembangkan untuk membantu proses pengelolaan budidaya maggot Black Soldier Fly (BSF) melalui pemantauan kondisi lingkungan secara digital sehingga proses budidaya menjadi lebih efektif, efisien, dan terukur.
+
+---
+
+# ⚙️ Teknologi yang Digunakan
+
+## Backend
+
+* Python 3
+* Flask
+* SQLite
+* REST API
+
+## Frontend
+
+* HTML5
+* CSS3
+* JavaScript
+
+## Hardware
+
+* ESP32
+* Sensor Suhu
+* Sensor Kelembaban
+* Sensor Cahaya
+
+---
+
+# 🏗️ Arsitektur Sistem
+
+```text
+ESP32 + Sensor
+       │
+       ▼
+REST API (Flask)
+       │
+       ▼
+Database SQLite
+       │
+       ▼
+Dashboard Web
+       │
+       ▼
+Pengguna
+```
+
+ESP32 membaca data sensor kemudian mengirimkannya ke server Flask melalui REST API. Data diproses dan disimpan ke database SQLite sebelum ditampilkan pada dashboard web.
+
+---
+
+# 📂 Struktur Proyek
+
+```text
+SMART-MAGGOT-WEB/
+│
+├── codingan-esp32-arduinoIDE/
+│   └── code.txt
+│
+├── static/
+│   ├── css/
+│   │   └── style.css
+│   │
+│   └── img/
+│       └── login_illustration.png
+│
+├── templates/
+│   ├── edukasi.html
+│   ├── index.html
+│   ├── login.html
+│   ├── profile.html
+│   └── register.html
+│
+├── .gitignore
+├── app.py
+├── database.db
+├── old_index.html
+├── readme.md
+└── requirements.txt
+```
+
+---
+
+# 📁 Penjelasan Struktur Folder
+
+| Folder / File                | Keterangan                                             |
+| ---------------------------- | ------------------------------------------------------ |
+| `app.py`                     | File utama aplikasi Flask.                             |
+| `database.db`                | Database SQLite yang digunakan sistem.                 |
+| `templates/`                 | Berisi halaman HTML yang dirender Flask.               |
+| `static/`                    | Berisi aset statis seperti CSS dan gambar.             |
+| `codingan-esp32-arduinoIDE/` | Source code ESP32 untuk komunikasi sensor.             |
+| `requirements.txt`           | Daftar dependensi Python yang dibutuhkan.              |
+| `old_index.html`             | File dashboard versi lama yang disimpan sebagai arsip. |
+| `.gitignore`                 | Konfigurasi file yang tidak diunggah ke GitHub.        |
+| `readme.md`                  | Dokumentasi proyek.                                    |
+
+---
+
+# 🌐 Fitur Utama
+
+## Dashboard Monitoring
+
+Menampilkan data kondisi lingkungan kandang maggot secara real-time.
+
+## Login dan Registrasi
+
+Menyediakan sistem autentikasi pengguna.
+
+## Profil Pengguna
+
+Menampilkan informasi akun pengguna yang sedang login.
+
+## Edukasi Maggot
+
+Memberikan informasi dan edukasi mengenai budidaya maggot serta pengelolaan sampah organik.
+
+## Integrasi Sensor ESP32
+
+Menerima data sensor melalui REST API untuk ditampilkan pada dashboard.
+
+---
+
+# 🔌 REST API
+
+## Kirim Data Sensor
+
+```http
+POST /api/kirim-data
+```
+
+Contoh JSON:
+
+```json
+{
+  "suhu": 30,
+  "kelembaban": 75,
+  "cahaya": 450
+}
+```
+
+Fungsi:
+
+* Menerima data dari ESP32.
+* Memvalidasi data sensor.
+* Menyimpan data ke sistem.
+
+---
+
+## Ambil Data Terbaru
+
+```http
+GET /api/data-terbaru
+```
+
+Response:
+
+```json
+{
+  "suhu": 30,
+  "kelembaban": 75,
+  "cahaya": 450
+}
+```
+
+Fungsi:
+
+* Menyediakan data terbaru kepada dashboard web.
+
+---
+
+# 🗄️ Database
+
+Sistem menggunakan SQLite sebagai media penyimpanan data.
+
+Keuntungan:
+
+* Ringan.
+* Tidak memerlukan instalasi server database tambahan.
+* Cocok untuk kebutuhan prototipe dan pengembangan akademik.
+
+File database:
+
+```text
+database.db
+```
+
+---
+
+# 🚀 Cara Menjalankan Proyek
+
+## 1. Clone Repository
+
+```bash
+git clone <repository-url>
+```
+
+## 2. Masuk ke Folder Proyek
+
+```bash
+cd SMART-MAGGOT-WEB
+```
+
+## 3. Install Dependensi
+
+```bash
+pip install -r requirements.txt
+```
+
+## 4. Jalankan Flask
+
+```bash
+python app.py
+```
+
+## 5. Akses Aplikasi
+
+```text
+http://127.0.0.1:5000
+```
+
+---
+
+# 📡 Integrasi ESP32
+
+Source code ESP32 tersedia pada folder:
+
+```text
+codingan-esp32-arduinoIDE/
+```
+
+ESP32 bertugas untuk:
+
+1. Membaca data sensor.
+2. Menghubungkan perangkat ke jaringan Wi-Fi.
+3. Mengirimkan data sensor ke Flask menggunakan HTTP POST.
+4. Memperbarui data monitoring secara berkala.
